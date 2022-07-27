@@ -1,17 +1,17 @@
 package edu.school21.chat.models;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class User {
-    private long userID;
+    private Long userID;
     private String login;
     private String password;
-    List<Chatroom> createdRooms;
-    List<Chatroom> rooms;
+    List<Chatroom> createdRooms = new ArrayList<>();
+    List<Chatroom> rooms = new ArrayList<>();
 
-    User(long userID, String login, String password, List<Chatroom> createdRooms, List<Chatroom> rooms)
-    {
+    public User(Long userID, String login, String password, List<Chatroom> createdRooms, List<Chatroom> rooms) {
         this.userID = userID;
         this.login = login;
         this.password = password;
@@ -19,11 +19,51 @@ public class User {
         this.rooms = rooms;
     }
 
-    public User(long userID, String login, String password)
+    public User(Long userid, String login, String password)
     {
-        this.userID = userID;
+        this.userID = userid;
         this.login = login;
         this.password = password;
+    }
+
+    public Long getUserID() {
+        return userID;
+    }
+
+    public void setUserID(Long userID) {
+        this.userID = userID;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public List<Chatroom> getCreatedRooms() {
+        return createdRooms;
+    }
+
+    public void setCreatedRooms(List<Chatroom> createdRooms) {
+        this.createdRooms = createdRooms;
+    }
+
+    public List<Chatroom> getRooms() {
+        return rooms;
+    }
+
+    public void setRooms(List<Chatroom> rooms) {
+        this.rooms = rooms;
     }
 
     @Override
@@ -31,7 +71,11 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return userID == user.userID && Objects.equals(login, user.login) && Objects.equals(password, user.password) && Objects.equals(createdRooms, user.createdRooms) && Objects.equals(rooms, user.rooms);
+        return userID == user.userID &&
+                login.equals(user.login) &&
+                password.equals(user.password) &&
+                Objects.equals(createdRooms, user.createdRooms) &&
+                Objects.equals(rooms, user.rooms);
     }
 
     @Override
@@ -39,52 +83,14 @@ public class User {
         return Objects.hash(userID, login, password, createdRooms, rooms);
     }
 
-    public String toSting()
-    {
-        return ("USER INFO --> userID: " + userID +
-                " login: " + login +
-                " password: " + password +
-                " createdRooms: " + createdRooms +
-                " rooms: " + rooms);
-    }
-
-    public void setCreatedRooms(List<Chatroom> createdRooms) {
-        this.createdRooms = createdRooms;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setRooms(List<Chatroom> rooms) {
-        this.rooms = rooms;
-    }
-
-    public void setUserID(long userID) {
-        this.userID = userID;
-    }
-
-    public long getUserID() {
-        return userID;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public List<Chatroom> getCreatedRooms() {
-        return createdRooms;
-    }
-
-    public List<Chatroom> getRooms() {
-        return rooms;
+    @Override
+    public String toString() {
+        return "User{" +
+                "userID=" + userID +
+                ", login='" + login + '\'' +
+                ", password='" + password + '\'' +
+                ", createdRooms=" + createdRooms +
+                ", rooms=" + rooms +
+                '}';
     }
 }

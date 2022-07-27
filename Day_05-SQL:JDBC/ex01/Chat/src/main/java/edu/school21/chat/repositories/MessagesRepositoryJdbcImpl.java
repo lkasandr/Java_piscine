@@ -10,79 +10,45 @@ import java.util.Optional;
 
 public class MessagesRepositoryJdbcImpl implements MessagesRepository{
     private HikariDataSource ds;
-    private User user;
-    private Chatroom room;
-    private Message message;
 
     public MessagesRepositoryJdbcImpl(HikariDataSource ds)
     {
         this.ds = ds;
     }
 
-    public Optional<Message> findById(Long id) {
-        Optional<Message> optionalMessage = null;
-        try (Connection cM = ds.getConnection();
-             Statement sM = cM.createStatement();
-             ResultSet rsM = sM.executeQuery("SELECT * FROM \"Message\" WHERE messageid = " + id))
-        {
-            rsM.next();
-            setUser(rsM.getLong("userid"));
-            setChatroom(rsM.getLong("roomid"));
-            optionalMessage = Optional.of( new Message(
-                    rsM.getLong("messageid"),
-                    this.user,
-                    this.room,
-                    rsM.getString("textmessage"),
-                    rsM.getTimestamp("datemessage").toLocalDateTime()));
-            this.message = optionalMessage.get();
-            printInfo();
+    public Optional<Message> findById(Long id)
+    {
+        Optional<Message> optionalMessage = Optional.empty();
 
+        try (Connection connection = ds.getConnection();
+             Statement statement = connection.createStatement())
+        {
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM chat.Message WHERE messageID = " + id);
+            if (!resultSet.next())
+                return Optional.of(new Message(0L, null, null, "message", null));
+            String text = resultSet.getString("textMessage");
+            Timestamp time = resultSet.getTimestamp("dateMessage");
+            Long userID = resultSet.getLong("userID");
+            Long roomID = resultSet.getLong("roomID");
+            resultSet = statement.executeQuery("SELECT * FROM chat.Users WHERE userID = " + userID);
+            resultSet.next();
+
+            User user = new User(userID,
+                    resultSet.getString("login"),
+                    resultSet.getString("password"),
+                    null,
+                    null);
+
+            resultSet = statement.executeQuery("SELECT * FROM chat.Chatroom WHERE roomID = " + roomID);
+            resultSet.next();
+            Chatroom room = new Chatroom(roomID,
+                    resultSet.getString("roomName"),
+                    null,
+                    null);
+            optionalMessage = Optional.of(new Message(id, user, room, text, time.toLocalDateTime()));
         } catch (SQLException e) {
-            System.out.println("No message");
+            System.err.println(e.getMessage());
         }
         return optionalMessage;
-    }
-
-    private void setUser(long id) throws SQLException
-    {
-        try(Connection cU = ds.getConnection();
-            Statement sU = cU.createStatement();
-            ResultSet rsU = sU.executeQuery("SELECT * FROM \"Users\" " + "WHERE userid = " + id))
-        {
-            rsU.next();
-            Optional<User> optionalUser = Optional.of(new User(
-                    rsU.getLong("userid"),
-                    rsU.getString("login"),
-                    rsU.getString("password")));
-            this.user = optionalUser.get();
-        }
-        catch (SQLException e) {
-            System.out.println("No message");
-        }
-    }
-
-    private void setChatroom(long id) throws SQLException
-    {
-        try (Connection cR = ds.getConnection();
-             Statement sR = cR.createStatement();
-             ResultSet rsR = sR.executeQuery("SELECT * FROM \"Chatroom\" " +
-                     "WHERE roomid = " + id)) {
-            rsR.next();
-            Optional<Chatroom> optionalChatroom = Optional.of(new Chatroom(
-                    rsR.getLong("roomid"),
-                    rsR.getString("roomname")));
-            this.room = optionalChatroom.get();
-        }
-        catch (SQLException e) {
-            System.out.println("No message");
-        }
-    }
-
-    private void printInfo()
-    {
-        System.out.println("Message: {");
-        System.out.println("id: " + message.getId() + ",");
-        System.out.println(user.toSting());
-        System.out.println(room.toSting());
     }
 }

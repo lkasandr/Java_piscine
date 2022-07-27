@@ -1,8 +1,8 @@
 package edu.school21.chat.app;
 
 import com.zaxxer.hikari.HikariDataSource;
-import edu.school21.chat.repositories.MessagesRepository;
 import edu.school21.chat.repositories.MessagesRepositoryJdbcImpl;
+import edu.school21.chat.repositories.MessagesRepository;
 
 import java.util.Scanner;
 
@@ -31,7 +31,7 @@ public class Program {
             {
                 str = in.next();
                 if (str.equals("exit"))
-                    break;
+                    return ;
                 else
                     System.out.println("Invalid input");
             }

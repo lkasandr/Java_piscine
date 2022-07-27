@@ -1,4 +1,4 @@
-CREATE TABLE "Users" (
+CREATE TABLE Users (
     userID serial,
     login varchar NOT NULL,
     password varchar NOT NULL,
@@ -7,15 +7,14 @@ CREATE TABLE "Users" (
     PRIMARY KEY ( userID )
 );
 
-CREATE TABLE "Chatroom" (
+CREATE TABLE Chatroom (
     roomID serial,
     roomName varchar,
-    ownerID int REFERENCES User (userID),
-    message varchar,
+    ownerID int REFERENCES Users (userID),
     PRIMARY KEY ( roomID )
 );
 
-CREATE TABLE "Message" (
+CREATE TABLE Message (
     messageID serial,
     userID int REFERENCES Users (userID),
     roomID int REFERENCES Chatroom (roomID),
