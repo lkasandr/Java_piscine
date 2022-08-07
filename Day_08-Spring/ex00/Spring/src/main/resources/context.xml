@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <beans xmlns="http://www.springframework.org/schema/beans"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:context="http://www.springframework.org/schema/context"
+           xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+        <bean id="preProcessorToLower"
+              class="impl.PreProcessorToLower">
+        </bean>
+
+        <bean id="preProcessorToUpper"
+              class="impl.PreProcessorToUpperImpl">
+        </bean>
+
+        <bean id="rendererErrToLower" class="impl.RendererErrImpl">
+            <constructor-arg ref="preProcessorToLower"/>
+        </bean>
+
+        <bean id="rendererErrToUpper" class="impl.RendererErrImpl">
+            <constructor-arg ref="preProcessorToUpper"/>
+        </bean>
+
+        <bean id="rendererOutToLower" class="impl.RendererStandardImpl">
+            <constructor-arg ref="preProcessorToLower"/>
+        </bean>
+
+        <bean id="rendererOutToUpper" class="impl.RendererStandardImpl">
+            <constructor-arg ref="preProcessorToUpper"/>
+        </bean>
+
+        <bean id="printerWithPrefix" class="impl.PrinterWithPrefixImpl">
+            <constructor-arg ref="rendererErrToUpper"/>
+            <property name="prefix" value="PREFIX"/>
+        </bean>
+
+    </beans>
